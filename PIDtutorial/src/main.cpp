@@ -134,7 +134,7 @@ void autonomous(void) {
   vex::task::sleep(1000);
 
   resetDriveSensors = true;
-  desiredValue = 300;
+  desiredValue = -300;
   desiredTurnValue = 300;
 }
 
