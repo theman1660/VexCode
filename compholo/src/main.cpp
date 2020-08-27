@@ -44,6 +44,9 @@ competition Competition;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
+  // All activities that occur before the competition starts
+  // Example: clearing encoders, setting servo positions, ...
+
   vexcodeInit();
   Llift.setStopping(brake);
   Rlift.setStopping(brake);
@@ -51,13 +54,18 @@ void pre_auton(void) {
   Rlift.setVelocity(100,percent);
   Lintake.setVelocity(100,percent);
   Rintake.setVelocity(100,percent);
-  LFM.setVelocity(25,percent);
-  RFM.setVelocity(25,percent);
-  LBM.setVelocity(25,percent);
-  RBM.setVelocity(25,percent);
-  
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
+  LFM.setVelocity(100,percent);
+  RFM.setVelocity(100,percent);
+  LBM.setVelocity(100,percent);
+  RBM.setVelocity(100,percent);
+}
+
+void drivevelocity(int velo)
+{
+  LFM.setVelocity(velo,percent);
+  RFM.setVelocity(velo,percent);
+  LBM.setVelocity(velo,percent);
+  RBM.setVelocity(velo,percent);
 }
 
 void liftup(int movementcount, bool stopmode) {
@@ -136,6 +144,8 @@ void autonomous() {
   task task1 = task(cameraTask); 
   cameraTaskEnable = true;
 
+  while(true){
+  drivevelocity(25);
   LFM.spin(reverse);
   RFM.spin(forward);
   LBM.spin(forward);
@@ -145,6 +155,17 @@ void autonomous() {
   RFM.stop();
   LBM.stop();
   RBM.stop();
+  drivevelocity(10);
+  LFM.spin(forward);
+  RFM.spin(reverse);
+  LBM.spin(reverse);
+  RBM.spin(forward);
+  waitUntil((Gyro.heading(degrees) <= 90));
+  LFM.stop();
+  RFM.stop();
+  LBM.stop();
+  RBM.stop();
+  }
 
   //Acutrate turning conversions
 
