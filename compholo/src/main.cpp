@@ -115,12 +115,11 @@ int cameraTask() {
     Controller1.Screen.print(Gyro.heading(degrees));
     Controller1.Screen.newLine();
     Vision5.takeSnapshot(Vision5__REDBOX);
-    
     if (Vision5.objectCount > 0) {
-      if (Vision5.objects[0].centerX < 100){
+      if (Vision5.objects[1].centerX < 0){
         Controller1.Screen.print("< 100");
       }
-      else if (Vision5.objects[0].centerX > 100){
+      else if (Vision5.objects[0].centerX > 0){
         Controller1.Screen.print("> 100");
       }
     }
