@@ -1,3 +1,18 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -113,6 +128,31 @@ void driveforward(int movementcount, bool stopmode){
   RBM.spinFor(forward, movementcount, degrees, stopmode);
 }
 
+void turnto(int turnamount)
+{
+  drivevelocity(25);
+  LFM.spin(reverse);
+  RFM.spin(forward);
+  LBM.spin(forward);
+  RBM.spin(reverse);
+  waitUntil((Gyro.heading(degrees) >= turnamount));
+  LFM.stop();
+  RFM.stop();
+  LBM.stop();
+  RBM.stop();
+  drivevelocity(10);
+  wait(1000,msec);
+  LFM.spin(reverse);
+  RFM.spin(forward);
+  LBM.spin(forward);
+  RBM.spin(reverse);
+  waitUntil((Gyro.heading(degrees) >= turnamount));
+  LFM.stop();
+  RFM.stop();
+  LBM.stop();
+  RBM.stop();
+}
+
 bool cameraTaskEnable = false;
 int cameraTask() {
   Brain.Screen.render(true,true);
@@ -120,7 +160,14 @@ int cameraTask() {
     Controller1.Screen.clearLine(1);
     Controller1.Screen.clearLine(2);
     Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print(Gyro.heading(degrees));
+    Controller1.Screen.print(LFM.torque());
+    Controller1.Screen.newLine();
+    Controller1.Screen.print(LBM.torque());
+    Controller1.Screen.newLine();
+    Controller1.Screen.print(RFM.torque());
+    Controller1.Screen.newLine();
+    Controller1.Screen.print(RBM.torque());
+    /*Controller1.Screen.print(Gyro.heading(degrees));
     Controller1.Screen.newLine();
     Vision5.takeSnapshot(Vision5__REDBOX);
     if (Vision5.objectCount > 0) {
@@ -134,7 +181,7 @@ int cameraTask() {
 
     else {
       Controller1.Screen.print("No Red Object");
-    }
+    }*/
     task::sleep(150);
   }
   return(1);
@@ -142,30 +189,15 @@ int cameraTask() {
 
 void autonomous() { 
   task task1 = task(cameraTask); 
-  cameraTaskEnable = true;
-
-  while(true){
+  cameraTaskEnable = false;
+  
   drivevelocity(25);
-  LFM.spin(reverse);
-  RFM.spin(forward);
-  LBM.spin(forward);
-  RBM.spin(reverse);
-  waitUntil((Gyro.heading(degrees) >= 90));
-  LFM.stop();
-  RFM.stop();
-  LBM.stop();
-  RBM.stop();
-  drivevelocity(10);
-  LFM.spin(forward);
-  RFM.spin(reverse);
-  LBM.spin(reverse);
-  RBM.spin(forward);
-  waitUntil((Gyro.heading(degrees) <= 90));
-  LFM.stop();
-  RFM.stop();
-  LBM.stop();
-  RBM.stop();
-  }
+  
+  driveforward(2000, true);
+//  turnto(135);
+//  driveforward(2000, true);
+
+
 
   //Acutrate turning conversions
 
@@ -218,6 +250,7 @@ void autonomous() {
 }
 
 void usercontrol(void) {
+  cameraTaskEnable = true;
   Lintake.setPosition(0,degrees);
   Rintake.setPosition(0,degrees);
   Llift.setPosition(0,degrees);

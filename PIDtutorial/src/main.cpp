@@ -52,7 +52,7 @@ double turnkI = 0.0;
 double turnkD = 0.0;
 
 //Auton Setting
-int desiredValue = 200;
+int desiredValue = 90;
 int desiredTurnValue = 0;
 
 int error; //SensorValue - DesiredValue : Position -> speed -> aceleration
