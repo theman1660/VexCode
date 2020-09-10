@@ -11,7 +11,7 @@
 // Rlift                motor         19              
 // Llift                motor         9               
 // Vision5              vision        21              
-// Gyro                 inertial      14              
+// Gyro                 inertial      14               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -61,7 +61,6 @@ void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
-
   vexcodeInit();
   Llift.setStopping(brake);
   Rlift.setStopping(brake);
@@ -69,10 +68,6 @@ void pre_auton(void) {
   Rlift.setVelocity(100,percent);
   Lintake.setVelocity(100,percent);
   Rintake.setVelocity(100,percent);
-  LFM.setVelocity(100,percent);
-  RFM.setVelocity(100,percent);
-  LBM.setVelocity(100,percent);
-  RBM.setVelocity(100,percent);
 }
 
 void drivevelocity(int velo)
@@ -161,11 +156,9 @@ int cameraTask() {
     Controller1.Screen.clearLine(2);
     Controller1.Screen.setCursor(1, 1);
     Controller1.Screen.print(LFM.torque());
-    Controller1.Screen.newLine();
     Controller1.Screen.print(LBM.torque());
     Controller1.Screen.newLine();
     Controller1.Screen.print(RFM.torque());
-    Controller1.Screen.newLine();
     Controller1.Screen.print(RBM.torque());
     /*Controller1.Screen.print(Gyro.heading(degrees));
     Controller1.Screen.newLine();
@@ -189,7 +182,7 @@ int cameraTask() {
 
 void autonomous() { 
   task task1 = task(cameraTask); 
-  cameraTaskEnable = false;
+  cameraTaskEnable = true;
   
   drivevelocity(25);
   
