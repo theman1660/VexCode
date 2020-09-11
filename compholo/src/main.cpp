@@ -148,7 +148,7 @@ void turnto(int turnamount)
   RBM.stop();
 }
 
-bool cameraTaskEnable = false;
+bool cameraTaskEnable;
 int cameraTask() {
   Brain.Screen.render(true,true);
   while(cameraTaskEnable){
@@ -186,7 +186,7 @@ void autonomous() {
   
   drivevelocity(25);
   
-  driveforward(2000, true);
+  //driveforward(2000, true);
 //  turnto(135);
 //  driveforward(2000, true);
 
@@ -204,17 +204,17 @@ void autonomous() {
   
   //Original time based auton
 
-  /*Lintake.spin(reverse);
+  Lintake.spin(reverse);
   Rintake.spin(reverse);
-  wait(2000,msec);
+  wait(500,msec);
   Lintake.stop();
   Rintake.stop();
   wait(200,msec);
-  rightstrafetime = 1600;
-  straferight();
+  //rightstrafetime = 1600;
+  straferight(600,true);
   wait(200,msec);
-  turnlefttime = 700;
-  turnleft();
+  //turnlefttime = 700;
+  turnleft(250,true);
   wait(200,msec);
   Lintake.spin(reverse);
   Rintake.spin(reverse);
@@ -239,7 +239,8 @@ void autonomous() {
   Rintake.stop();
   wait(1000,msec);
   Llift.stop();
-  Rlift.stop(); */
+  Rlift.stop();
+  driveforward(-500, true);
 }
 
 void usercontrol(void) {
@@ -263,6 +264,7 @@ void usercontrol(void) {
     RFM.setVelocity(RFMF,percent);
     LBM.setVelocity(LBMF,percent);
     RBM.setVelocity(RBMF,percent);
+
     LFM.spin(forward);
     RFM.spin(forward);
     LBM.spin(forward);
