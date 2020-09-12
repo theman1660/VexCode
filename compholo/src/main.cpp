@@ -11,6 +11,21 @@
 // Rlift                motor         19              
 // Llift                motor         9               
 // Vision5              vision        21              
+// Gyro                 inertial      14              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
 // Gyro                 inertial      14               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
@@ -123,14 +138,14 @@ void driveforward(int movementcount, bool stopmode){
   RBM.spinFor(forward, movementcount, degrees, stopmode);
 }
 
-void turnto(int turnamount)
+void turnrightto(int turnamount)
 {
   drivevelocity(25);
   LFM.spin(reverse);
   RFM.spin(forward);
   LBM.spin(forward);
   RBM.spin(reverse);
-  waitUntil((Gyro.heading(degrees) >= turnamount));
+  waitUntil((Gyro.heading(degrees) >= turnamount-20));
   LFM.stop();
   RFM.stop();
   LBM.stop();
@@ -141,6 +156,31 @@ void turnto(int turnamount)
   RFM.spin(forward);
   LBM.spin(forward);
   RBM.spin(reverse);
+  waitUntil((Gyro.heading(degrees) >= turnamount));
+  LFM.stop();
+  RFM.stop();
+  LBM.stop();
+  RBM.stop();
+}
+
+void turnleftto(int turnamount)
+{
+  drivevelocity(25);
+  LFM.spin(forward);
+  RFM.spin(reverse);
+  LBM.spin(reverse);
+  RBM.spin(forward);
+  waitUntil((Gyro.heading(degrees) >= turnamount-20));
+  LFM.stop();
+  RFM.stop();
+  LBM.stop();
+  RBM.stop();
+  drivevelocity(10);
+  wait(1000,msec);
+  LFM.spin(forward);
+  RFM.spin(reverse);
+  LBM.spin(reverse);
+  RBM.spin(forward);
   waitUntil((Gyro.heading(degrees) >= turnamount));
   LFM.stop();
   RFM.stop();
@@ -160,20 +200,22 @@ int cameraTask() {
     Controller1.Screen.newLine();
     Controller1.Screen.print(RFM.torque());
     Controller1.Screen.print(RBM.torque());
-    /*Controller1.Screen.print(Gyro.heading(degrees));
-    Controller1.Screen.newLine();
+
+    Brain.Screen.setCursor(1,1);
+    Brain.Screen.print(Gyro.heading(degrees));
+    Brain.Screen.newLine();
     Vision5.takeSnapshot(Vision5__REDBOX);
-    if (Vision5.objectCount > 0) {
+  /*if (Vision5.objectCount > 0) {
       if (Vision5.objects[1].centerX < 0){
-        Controller1.Screen.print("< 100");
-      }
+        Brain.Screen.print("< 100");
+      } 
       else if (Vision5.objects[0].centerX > 0){
-        Controller1.Screen.print("> 100");
+        Brian.Screen.print("> 100");
       }
     }
 
     else {
-      Controller1.Screen.print("No Red Object");
+      Brain.Screen.print("No Red Object");
     }*/
     task::sleep(150);
   }
@@ -182,13 +224,19 @@ int cameraTask() {
 
 void autonomous() { 
   task task1 = task(cameraTask); 
-  cameraTaskEnable = true;
+  cameraTaskEnable = false;
   
-  drivevelocity(25);
-  
-  //driveforward(2000, true);
-//  turnto(135);
-//  driveforward(2000, true);
+  /*drivevelocity(25);
+  intakein(360,true);
+  wait(200,msec);
+  straferight(600,true);
+  wait(200,msec);
+  turnleftto(135);
+  wait(200,msec);
+  intakein(5000,false);
+  driveforward(3000,true);
+  liftup(1000,true);
+  driveforward(-500, true);*/
 
 
 
@@ -211,7 +259,7 @@ void autonomous() {
   Rintake.stop();
   wait(200,msec);
   //rightstrafetime = 1600;
-  straferight(600,true);
+  straferight(700,true);
   wait(200,msec);
   //turnlefttime = 700;
   turnleft(250,true);
@@ -229,7 +277,7 @@ void autonomous() {
   wait(1300,msec);
   Llift.spin(forward);
   Rlift.spin(forward);
-  wait(700,msec);
+  wait(650,msec);
   RFM.stop();
   RBM.stop(); 
   LFM.stop();
@@ -244,7 +292,6 @@ void autonomous() {
 }
 
 void usercontrol(void) {
-  cameraTaskEnable = true;
   Lintake.setPosition(0,degrees);
   Rintake.setPosition(0,degrees);
   Llift.setPosition(0,degrees);
