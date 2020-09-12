@@ -25,21 +25,10 @@ using namespace vex;
 /////////////////
 //  Variables  //
 /////////////////
-int taskenable = false;
 
 /////////////////
-//  Task1  //
+//    Task1    //
 /////////////////
-int tasklift()
-{
-  while(taskenable)
-  {
-
-
-    task::sleep(1000);
-  }
-  return(1);
-}
 
 /////////////////
 //  MainTask  //
@@ -47,26 +36,25 @@ int tasklift()
 int main() {
   vexcodeInit();
   Gyro.calibrate();
-  task task1 = task(tasklift);
-  taskenable = false;
   while(true)
   {
     float rotationammount = Gyro.heading(degrees);
     float rotationammountnow = 0;
 
-    if(Controller1.Axis3.position(percent) > 10 /*or Controller1.Axis3.position(percent) <10*/)
+    float LFMF = -Controller1.Axis3.position() - Controller1.Axis1.position() - Controller1.Axis4.position();
+    float RFMF = -Controller1.Axis3.position() + Controller1.Axis1.position() + Controller1.Axis4.position();
+    float LBMF = Controller1.Axis3.position() + Controller1.Axis1.position() - Controller1.Axis4.position();
+    float RBMF = Controller1.Axis3.position() - Controller1.Axis1.position() + Controller1.Axis4.position();
+
+    LFM.setVelocity(LFMF,percent);
+    RFM.setVelocity(RFMF,percent);
+    LBM.setVelocity(LBMF,percent);
+    RBM.setVelocity(RBMF,percent);
+
+    if(Controller1.Axis3.position(percent) > 10)
     {
       rotationammountnow = rotationammount;
 
-      float LFMF = -Controller1.Axis3.position() - Controller1.Axis1.position() - Controller1.Axis4.position();
-      float RFMF = -Controller1.Axis3.position() + Controller1.Axis1.position() + Controller1.Axis4.position();
-      float LBMF = Controller1.Axis3.position() + Controller1.Axis1.position() - Controller1.Axis4.position();
-      float RBMF = Controller1.Axis3.position() - Controller1.Axis1.position() + Controller1.Axis4.position();
-      LFM.setVelocity(LFMF,percent);
-      RFM.setVelocity(RFMF,percent);
-      LBM.setVelocity(LBMF,percent);
-      RBM.setVelocity(RBMF,percent);
-      
       while(rotationammount > rotationammountnow + 5) //more than so must turn left
       {
       LFM.setVelocity(LFMF,percent);
