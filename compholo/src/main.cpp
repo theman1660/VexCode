@@ -12,6 +12,73 @@
 // Llift                motor         9               
 // Vision5              vision        21              
 // Gyro                 inertial      14              
+// RangeL               sonar         A, B            
+// RangeR               sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// RangeL               sonar         A, B            
+// RangeFinderC         sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// RangeFinderA         sonar         A, B            
+// RangeFinderC         sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// RangeFinderA         sonar         A, B            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -71,12 +138,52 @@ competition Competition;
 /*  function is only called once after the V5 has been powered on and        */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
+bool cameraTaskEnable;
+int cameraTask() {
+  Brain.Screen.render(true,true);
+  while(cameraTaskEnable){
+    Controller1.Screen.clearLine(1);
+    Controller1.Screen.clearLine(2);
+    Controller1.Screen.setCursor(1, 1);
+    //Controller1.Screen.print(LFM.torque());
+    //Controller1.Screen.print(LBM.torque());
+    Controller1.Screen.print("LeftDis");
+    Controller1.Screen.print(RangeL.distance(mm));
+    Controller1.Screen.newLine();
+    Controller1.Screen.print("RightDis");
+    Controller1.Screen.print(RangeR.distance(mm));
+    //Controller1.Screen.print(RFM.torque());
+    //Controller1.Screen.print(RBM.torque());
+
+    Brain.Screen.setCursor(1,1);
+    Brain.Screen.print(Gyro.heading(degrees));
+    Brain.Screen.newLine();
+    // Vision5.takeSnapshot(Vision5__REDBOX);
+  /*if (Vision5.objectCount > 0) {
+      if (Vision5.objects[1].centerX < 0){
+        Brain.Screen.print("< 100");
+      } 
+      else if (Vision5.objects[0].centerX > 0){
+        Brian.Screen.print("> 100");
+      }
+    }
+
+    else {
+      Brain.Screen.print("No Red Object");
+    }*/
+    task::sleep(150);
+  }
+  return(1);
+}
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
   vexcodeInit();
+
+  task task1 = task(cameraTask); 
+  cameraTaskEnable = true;
   Llift.setStopping(brake);
   Rlift.setStopping(brake);
   Llift.setVelocity(100,percent);
@@ -188,70 +295,42 @@ void turnleftto(int turnamount)
   RBM.stop();
 }
 
-bool cameraTaskEnable;
-int cameraTask() {
-  Brain.Screen.render(true,true);
-  while(cameraTaskEnable){
-    Controller1.Screen.clearLine(1);
-    Controller1.Screen.clearLine(2);
-    Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print(LFM.torque());
-    Controller1.Screen.print(LBM.torque());
-    Controller1.Screen.newLine();
-    Controller1.Screen.print(RFM.torque());
-    Controller1.Screen.print(RBM.torque());
-
-    Brain.Screen.setCursor(1,1);
-    Brain.Screen.print(Gyro.heading(degrees));
-    Brain.Screen.newLine();
-    Vision5.takeSnapshot(Vision5__REDBOX);
-  /*if (Vision5.objectCount > 0) {
-      if (Vision5.objects[1].centerX < 0){
-        Brain.Screen.print("< 100");
-      } 
-      else if (Vision5.objects[0].centerX > 0){
-        Brian.Screen.print("> 100");
-      }
-    }
-
-    else {
-      Brain.Screen.print("No Red Object");
-    }*/
-    task::sleep(150);
-  }
-  return(1);
-}
-
 void autonomous() { 
-  task task1 = task(cameraTask); 
-  cameraTaskEnable = false;
-  
-  /*drivevelocity(25);
+  /*LFM.spin(reverse);
+  RFM.spin(reverse);
+  LBM.spin(forward);
+  RBM.spin(forward);*/ 
+
+  drivevelocity(25);
   intakein(360,true);
   wait(200,msec);
-  straferight(600,true);
-  wait(200,msec);
-  turnleftto(135);
-  wait(200,msec);
-  intakein(5000,false);
-  driveforward(3000,true);
-  liftup(1000,true);
-  driveforward(-500, true);*/
+  straferight(500 ,true);
+
+  //wait(200,msec);
+  //turnleftto(135);
+  //wait(200,msec);
+  //intakein(5000,false);
+  //driveforward(3000,true);
+  //liftup(1000,true);
+  //driveforward(-500, true);
 
 
 
   //Acutrate turning conversions
 
-  /*float moveammount = 100; // in cm
+  /*
+  float moveammount = 100; // in cm
   const float CIRCUMFERENCE = 31.919; //in cm
   float distanceholo = moveammount * 1.41; //
   float conversionammount = distanceholo / CIRCUMFERENCE * 360;
   driveforward(conversionammount, true);
   wait(2,msec);
-  drivereverse(conversionammount, true); */
+  drivereverse(conversionammount, true); 
+  */
   
   //Original time based auton
 
+  /*
   Lintake.spin(reverse);
   Rintake.spin(reverse);
   wait(500,msec);
@@ -289,6 +368,7 @@ void autonomous() {
   Llift.stop();
   Rlift.stop();
   driveforward(-500, true);
+  */
 }
 
 void usercontrol(void) {
@@ -302,15 +382,10 @@ void usercontrol(void) {
   RBM.setPosition(0,degrees);
 
   while (true) {
-    float LFMF = -Controller1.Axis3.position() - Controller1.Axis1.position() - Controller1.Axis4.position();
-    float RFMF = -Controller1.Axis3.position() + Controller1.Axis1.position() + Controller1.Axis4.position();
-    float LBMF = Controller1.Axis3.position() + Controller1.Axis1.position() - Controller1.Axis4.position();
-    float RBMF = Controller1.Axis3.position() - Controller1.Axis1.position() + Controller1.Axis4.position();
-    
-    LFM.setVelocity(LFMF,percent);
-    RFM.setVelocity(RFMF,percent);
-    LBM.setVelocity(LBMF,percent);
-    RBM.setVelocity(RBMF,percent);
+    LFM.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position() - Controller1.Axis4.position()),percent);
+    RFM.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position() + Controller1.Axis4.position()),percent);
+    LBM.setVelocity((Controller1.Axis3.position() + Controller1.Axis1.position() - Controller1.Axis4.position()),percent);
+    RBM.setVelocity((Controller1.Axis3.position() - Controller1.Axis1.position() + Controller1.Axis4.position()),percent);
 
     LFM.spin(forward);
     RFM.spin(forward);
