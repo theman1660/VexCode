@@ -1,106 +1,9 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// LFM                  motor         15              
-// RFM                  motor         2               
-// LBM                  motor         13              
-// RBM                  motor         12              
-// Lintake              motor         10              
-// Rintake              motor         20              
-// Rlift                motor         19              
-// Llift                motor         9               
-// Vision5              vision        21              
-// Gyro                 inertial      14              
-// RangeL               sonar         A, B            
-// RangeR               sonar         C, D            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// LFM                  motor         15              
-// RFM                  motor         2               
-// LBM                  motor         13              
-// RBM                  motor         12              
-// Lintake              motor         10              
-// Rintake              motor         20              
-// Rlift                motor         19              
-// Llift                motor         9               
-// Vision5              vision        21              
-// Gyro                 inertial      14              
-// RangeL               sonar         A, B            
-// RangeFinderC         sonar         C, D            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// LFM                  motor         15              
-// RFM                  motor         2               
-// LBM                  motor         13              
-// RBM                  motor         12              
-// Lintake              motor         10              
-// Rintake              motor         20              
-// Rlift                motor         19              
-// Llift                motor         9               
-// Vision5              vision        21              
-// Gyro                 inertial      14              
-// RangeFinderA         sonar         A, B            
-// RangeFinderC         sonar         C, D            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// LFM                  motor         15              
-// RFM                  motor         2               
-// LBM                  motor         13              
-// RBM                  motor         12              
-// Lintake              motor         10              
-// Rintake              motor         20              
-// Rlift                motor         19              
-// Llift                motor         9               
-// Vision5              vision        21              
-// Gyro                 inertial      14              
-// RangeFinderA         sonar         A, B            
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// LFM                  motor         15              
-// RFM                  motor         2               
-// LBM                  motor         13              
-// RBM                  motor         12              
-// Lintake              motor         10              
-// Rintake              motor         20              
-// Rlift                motor         19              
-// Llift                motor         9               
-// Vision5              vision        21              
-// Gyro                 inertial      14              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// LFM                  motor         15              
-// RFM                  motor         2               
-// LBM                  motor         13              
-// RBM                  motor         12              
-// Lintake              motor         10              
-// Rintake              motor         20              
-// Rlift                motor         19              
-// Llift                motor         9               
-// Vision5              vision        21              
-// Gyro                 inertial      14               
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/*    Module:       main.cpp                                                  */
-/*    Author:       VEX                                                       */
-/*    Created:      Thu Sep 26 2019                                           */
-/*    Description:  Competition Template                                      */
+/*    Module:    main.cpp                                                     */
+/*    Author:                                                        */
+/*    Created:                                                       */
+/*    Description:                                                   */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
@@ -147,13 +50,15 @@ int cameraTask() {
     Controller1.Screen.setCursor(1, 1);
     //Controller1.Screen.print(LFM.torque());
     //Controller1.Screen.print(LBM.torque());
+    //Controller1.Screen.print(RFM.torque());
+    //Controller1.Screen.print(RBM.torque());
     Controller1.Screen.print("LeftDis");
     Controller1.Screen.print(RangeL.distance(mm));
     Controller1.Screen.newLine();
     Controller1.Screen.print("RightDis");
     Controller1.Screen.print(RangeR.distance(mm));
-    //Controller1.Screen.print(RFM.torque());
-    //Controller1.Screen.print(RBM.torque());
+    Controller1.Screen.newLine();
+    Controller1.Screen.print(Gyro.yaw());
 
     Brain.Screen.setCursor(1,1);
     Brain.Screen.print(Gyro.heading(degrees));
@@ -200,7 +105,7 @@ void drivevelocity(int velo)
   RBM.setVelocity(velo,percent);
 }
 
-void liftup(int movementcount, bool stopmode) {
+void liftout(int movementcount, bool stopmode) {
   Llift.spinFor(forward, movementcount, degrees, false);
   Rlift.spinFor(forward, movementcount, degrees, stopmode);
 }
@@ -272,39 +177,94 @@ void turnrightto(int turnamount)
 
 void turnleftto(int turnamount)
 {
-  drivevelocity(25);
-  LFM.spin(forward);
-  RFM.spin(reverse);
-  LBM.spin(reverse);
-  RBM.spin(forward);
-  waitUntil((Gyro.heading(degrees) >= turnamount-20));
-  LFM.stop();
-  RFM.stop();
-  LBM.stop();
-  RBM.stop();
   drivevelocity(10);
-  wait(1000,msec);
   LFM.spin(forward);
   RFM.spin(reverse);
   LBM.spin(reverse);
   RBM.spin(forward);
-  waitUntil((Gyro.heading(degrees) >= turnamount));
+  wait(300, msec);
+  waitUntil((Gyro.yaw() <= turnamount));
   LFM.stop();
   RFM.stop();
   LBM.stop();
   RBM.stop();
+  drivevelocity(25);
 }
 
-void autonomous() { 
-  /*LFM.spin(reverse);
+/*void turntowards(int turnamount, int turndirection)
+{
+  //0 left 1 right
+  if(turndirection == 0)
+  {
+    drivevelocity(10);
+    LFM.spin(forward);
+    RFM.spin(reverse);
+    LBM.spin(reverse);
+    RBM.spin(forward);
+    wait(300, msec);
+    waitUntil((Gyro.yaw() <= turnamount));
+    LFM.stop();
+    RFM.stop();
+    LBM.stop();
+    RBM.stop();
+    drivevelocity(25);
+  }
+  else if (turndirection == 1) 
+  {
+    drivevelocity(25);
+    LFM.spin(reverse);
+    RFM.spin(forward);
+    LBM.spin(forward);
+    RBM.spin(reverse);
+    waitUntil((Gyro.heading(degrees) >= turnamount-20));
+    LFM.stop();
+    RFM.stop();
+    LBM.stop();
+    RBM.stop();
+    drivevelocity(10);
+    wait(1000,msec);
+    LFM.spin(reverse);
+    RFM.spin(forward);
+    LBM.spin(forward);
+    RBM.spin(reverse);
+    waitUntil((Gyro.heading(degrees) >= turnamount));
+    LFM.stop();
+    RFM.stop();
+    LBM.stop();
+    RBM.stop();
+  }
+  drivevelocity(10);
+  LFM.spin(forward);
   RFM.spin(reverse);
-  LBM.spin(forward);
-  RBM.spin(forward);*/ 
+  LBM.spin(reverse);
+  RBM.spin(forward);
+  wait(300, msec);
+  waitUntil((Gyro.yaw() <= turnamount));
+  LFM.stop();
+  RFM.stop();
+  LBM.stop();
+  RBM.stop();
+  drivevelocity(25);
+}*/
 
+void autonomous() { 
+  Gyro.calibrate();
+  waitUntil(Gyro.isCalibrating() == false);
   drivevelocity(25);
   intakein(360,true);
-  wait(200,msec);
+  wait(500,msec);
   straferight(500 ,true);
+  turnleftto(-45);
+  driveforward(750, false);
+  Lintake.spin(forward);
+  Rintake.spin(reverse);
+  wait(3000, msec);
+  Lintake.stop();
+  Rintake.stop();
+  liftout(2000, true);
+  intakein(1500, true);
+  driveforward(-200, true);
+
 
   //wait(200,msec);
   //turnleftto(135);
