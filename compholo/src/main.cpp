@@ -22,6 +22,8 @@
 // Vision5              vision        21              
 // Gyro                 inertial      14              
 // ---- END VEXCODE CONFIGURED DEVICES ----
+// RangeL               RangeFinder   A+B
+// RangeR               RangeFinder   C+D
 
 #include "vex.h"
 
