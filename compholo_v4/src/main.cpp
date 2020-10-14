@@ -1,12 +1,88 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:    main.cpp                                                     */
-/*    Author:                                                        */
-/*    Created:                                                       */
-/*    Description:                                                   */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// RangeL               sonar         A, B            
+// RangeR               sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// RangeL               sonar         A, B            
+// RangeR               sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// RangeL               sonar         A, B            
+// RangeR               sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// RangeL               sonar         A, B            
+// RangeR               sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         15              
+// RFM                  motor         2               
+// LBM                  motor         13              
+// RBM                  motor         12              
+// Lintake              motor         10              
+// Rintake              motor         20              
+// Rlift                motor         19              
+// Llift                motor         9               
+// Vision5              vision        21              
+// Gyro                 inertial      14              
+// RangeL               sonar         A, B            
+// RangeR               sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
@@ -25,6 +101,14 @@
 // RangeR               sonar         C, D            
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:    main.cpp                                                     */
+/*    Author:                                                        */
+/*    Created:                                                       */
+/*    Description:                                                   */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
 #include "vex.h"
 
@@ -335,7 +419,6 @@ void autonomous() {
 }
 
 void usercontrol(void) {
-  drivevelocity(75);
   Lintake.setPosition(0,degrees);
   Rintake.setPosition(0,degrees);
   Llift.setPosition(0,degrees);
@@ -346,10 +429,17 @@ void usercontrol(void) {
   RBM.setPosition(0,degrees);
 
   while (true) {
-    LFM.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position() - Controller1.Axis4.position()),percent);
+    /*LFM.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position() - Controller1.Axis4.position()),percent);
     RFM.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position() + Controller1.Axis4.position()),percent);
     LBM.setVelocity((Controller1.Axis3.position() + Controller1.Axis1.position() - Controller1.Axis4.position()),percent);
-    RBM.setVelocity((Controller1.Axis3.position() - Controller1.Axis1.position() + Controller1.Axis4.position()),percent);
+    RBM.setVelocity((Controller1.Axis3.position() - Controller1.Axis1.position() + Controller1.Axis4.position()),percent);*/
+
+    LFM.setVelocity((Controller1.Axis3.position() + Controller1.Axis4.position() + Controller1.Axis1.position()),percent);
+    LBM.setVelocity((Controller1.Axis3.position() - Controller1.Axis4.position() + Controller1.Axis1.position()),percent);
+    RFM.setVelocity(((-Controller1.Axis3.position()) + Controller1.Axis4.position() + Controller1.Axis1.position()),percent);
+    RBM.setVelocity(((-Controller1.Axis3.position()) - Controller1.Axis4.position() + Controller1.Axis1.position()),percent);
+
+
 
     LFM.spin(forward);
     RFM.spin(forward);
