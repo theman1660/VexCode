@@ -21,9 +21,10 @@
 // Llift                motor         9               
 // Vision5              vision        21              
 // Gyro                 inertial      14              
+// RangeL               sonar         A, B            
+// RangeR               sonar         C, D            
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// RangeL               RangeFinder   A+B
-// RangeR               RangeFinder   C+D
+
 
 #include "vex.h"
 
@@ -334,6 +335,7 @@ void autonomous() {
 }
 
 void usercontrol(void) {
+  drivevelocity(75);
   Lintake.setPosition(0,degrees);
   Rintake.setPosition(0,degrees);
   Llift.setPosition(0,degrees);
