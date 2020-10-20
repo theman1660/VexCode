@@ -3,7 +3,7 @@
 /*    Module:    main.cpp                                                     */
 /*    Author:                                                        */
 /*    Created:                                                       */
-/*    Description:                                                   */
+/*    Description:  code                                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
@@ -11,19 +11,19 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
-// LFM                  motor         15              
-// RFM                  motor         2               
-// LBM                  motor         13              
-// RBM                  motor         12              
-// Lintake              motor         10              
-// Rintake              motor         20              
-// Rlift                motor         19              
-// Llift                motor         9               
+// LFM                  motor         20               
+// RFM                  motor         9              
+// LBM                  motor         19              
+// RBM                  motor         10              
+// Lintake              motor         15              
+// Rintake              motor         8               
+// Rlift                motor         5               
+// Llift                motor         14              
 // Vision5              vision        21              
-// Gyro                 inertial      14              
+// Gyro                 inertial      4               
+// RangeL               sonar         A, B            
+// RangeR               sonar         C, D            
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// RangeL               RangeFinder   A+B
-// RangeR               RangeFinder   C+D
 
 #include "vex.h"
 
@@ -43,28 +43,48 @@ competition Competition;
 /*  function is only called once after the V5 has been powered on and        */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
+
 bool cameraTaskEnable;
 int cameraTask() {
   Brain.Screen.render(true,true);
   while(cameraTaskEnable){
-    Controller1.Screen.clearLine(1);
-    Controller1.Screen.clearLine(2);
-    Controller1.Screen.setCursor(1, 1);
+    /*int braincolour = 0;
+    if(Brain.Screen.pressing() && braincolour == 1)
+    {
+      braincolour = 0;
+      Brain.Screen.setFillColor(red);
+      Brain.Screen.setPenColor(red);
+      Brain.Screen.drawRectangle(0, 0, 1000, 1000);
+      wait(500, msec);
+    }
+    if(Brain.Screen.pressing() && braincolour == 0)
+    {
+      braincolour = 1;
+      Brain.Screen.setFillColor(blue);
+      Brain.Screen.setPenColor(blue);
+      Brain.Screen.drawRectangle(0, 0, 1000, 1000);
+      wait(500, msec);
+    }*/
+
     //Controller1.Screen.print(LFM.torque());
     //Controller1.Screen.print(LBM.torque());
     //Controller1.Screen.print(RFM.torque());
     //Controller1.Screen.print(RBM.torque());
-    Controller1.Screen.print("LeftDis");
+    Controller1.Screen.clearLine(1);
+    Controller1.Screen.clearLine(2);
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("LDis");
     Controller1.Screen.print(RangeL.distance(mm));
+    Controller1.Screen.print("LTemp");
+    Controller1.Screen.print(Lintake.temperature());
     Controller1.Screen.newLine();
-    Controller1.Screen.print("RightDis");
+    Controller1.Screen.print("RDis");
     Controller1.Screen.print(RangeR.distance(mm));
+    Controller1.Screen.print("RTemp");
+    Controller1.Screen.print(Rintake.temperature());
     Controller1.Screen.newLine();
+    Controller1.Screen.print("GyroYaw");
     Controller1.Screen.print(Gyro.yaw());
-
-    Brain.Screen.setCursor(1,1);
-    Brain.Screen.print(Gyro.heading(degrees));
-    Brain.Screen.newLine();
     // Vision5.takeSnapshot(Vision5__REDBOX);
   /*if (Vision5.objectCount > 0) {
       if (Vision5.objects[1].centerX < 0){
@@ -249,23 +269,24 @@ void turnleftto(int turnamount)
   drivevelocity(25);
 }*/
 
-void autonomous() { 
-  Gyro.calibrate();
-  waitUntil(Gyro.isCalibrating() == false);
-  drivevelocity(25);
-  intakein(360,true);
-  wait(500,msec);
-  straferight(500 ,true);
-  turnleftto(-45);
-  driveforward(750, false);
-  Lintake.spin(forward);
-  Rintake.spin(reverse);
-  wait(3000, msec);
-  Lintake.stop();
-  Rintake.stop();
-  liftout(2000, true);
-  intakein(1500, true);
-  driveforward(-200, true);
+void autonomous() {
+    Gyro.calibrate();
+    waitUntil(Gyro.isCalibrating() == false);
+    drivevelocity(25);
+    intakein(360,true);
+    wait(500,msec);
+    straferight(500 ,true);
+    turnleftto(-45);
+    driveforward(750, false);
+    Lintake.spin(forward);
+    Rintake.spin(reverse);
+    wait(3000, msec);
+    Lintake.stop();
+    Rintake.stop();
+    liftout(2000, true);
+    intakein(1500, true);
+    driveforward(-200, true);
+
 
 
   //wait(200,msec);
@@ -389,8 +410,6 @@ int main() {
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
-
-  Gyro.calibrate();
 
   // Run the pre-autonomous function.
   pre_auton();
