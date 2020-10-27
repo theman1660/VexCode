@@ -48,24 +48,6 @@ bool cameraTaskEnable;
 int cameraTask() {
   Brain.Screen.render(true,true);
   while(cameraTaskEnable){
-    /*int braincolour = 0;
-    if(Brain.Screen.pressing() && braincolour == 1)
-    {
-      braincolour = 0;
-      Brain.Screen.setFillColor(red);
-      Brain.Screen.setPenColor(red);
-      Brain.Screen.drawRectangle(0, 0, 1000, 1000);
-      wait(500, msec);
-    }
-    if(Brain.Screen.pressing() && braincolour == 0)
-    {
-      braincolour = 1;
-      Brain.Screen.setFillColor(blue);
-      Brain.Screen.setPenColor(blue);
-      Brain.Screen.drawRectangle(0, 0, 1000, 1000);
-      wait(500, msec);
-    }*/
-
     //Controller1.Screen.print(LFM.torque());
     //Controller1.Screen.print(LBM.torque());
     //Controller1.Screen.print(RFM.torque());
@@ -104,12 +86,13 @@ int cameraTask() {
 }
 
 void pre_auton(void) {
-  // Initializing Robot Configuration. DO NOT REMOVE!
-  // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
   vexcodeInit();
+  Gyro.calibrate();
+  waitUntil(Gyro.isCalibrating() == false);
+  Brain.Screen.print("GYRO good");
 
-  task task1 = task(cameraTask); 
+  task task1 = task(cameraTask);
   cameraTaskEnable = true;
   Llift.setStopping(brake);
   Rlift.setStopping(brake);
@@ -270,8 +253,6 @@ void turnleftto(int turnamount)
 }*/
 
 void autonomous() {
-    Gyro.calibrate();
-    waitUntil(Gyro.isCalibrating() == false);
     drivevelocity(25);
     intakein(360,true);
     wait(500,msec);
