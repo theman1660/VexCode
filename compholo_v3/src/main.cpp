@@ -32,18 +32,7 @@ using namespace vex;
 // A global instance of competition
 competition Competition;
 
-// define your global instances of motors and other devices here
-
-/*---------------------------------------------------------------------------*/
-/*                          Pre-Autonomous Functions                         */
-/*                                                                           */
-/*  You may want to perform some actions before the competition starts.      */
-/*  Do them in the following function.  You must return from this function   */
-/*  or the autonomous and usercontrol tasks will not be started.  This       */
-/*  function is only called once after the V5 has been powered on and        */
-/*  not every time that the robot is disabled.                               */
-/*---------------------------------------------------------------------------*/
-
+//Task for Printing to brain screen
 bool cameraTaskEnable;
 int cameraTask() {
   Brain.Screen.render(true,true);
@@ -85,6 +74,16 @@ int cameraTask() {
   return(1);
 }
 
+/*---------------------------------------------------------------------------*/
+/*                          Pre-Autonomous Functions                         */
+/*                                                                           */
+/*  You may want to perform some actions before the competition starts.      */
+/*  Do them in the following function.  You must return from this function   */
+/*  or the autonomous and usercontrol tasks will not be started.  This       */
+/*  function is only called once after the V5 has been powered on and        */
+/*  not every time that the robot is disabled.                               */
+/*---------------------------------------------------------------------------*/
+
 void pre_auton(void) {
   // Example: clearing encoders, setting servo positions, ...
   vexcodeInit();
@@ -101,7 +100,7 @@ void pre_auton(void) {
   Lintake.setVelocity(100,percent);
   Rintake.setVelocity(100,percent);
 }
-
+//change % of drive motor velocity
 void drivevelocity(int velo)
 {
   LFM.setVelocity(velo,percent);
@@ -110,6 +109,7 @@ void drivevelocity(int velo)
   RBM.setVelocity(velo,percent);
 }
 
+//Lift Functions
 void liftout(int movementcount, bool stopmode) {
   Llift.spinFor(forward, movementcount, degrees, false);
   Rlift.spinFor(forward, movementcount, degrees, stopmode);
@@ -120,6 +120,7 @@ void intakein(int movementcount, bool stopmode){
   Rintake.spinFor(reverse, movementcount, degrees, stopmode);
 }
 
+//Strafe Functions
 void strafeleft(int movementcount, bool stopmode){
   LFM.spinFor(reverse, movementcount, degrees, false);
   RFM.spinFor(forward, movementcount, degrees, false);
@@ -134,6 +135,7 @@ void straferight(int movementcount, bool stopmode){
   RBM.spinFor(forward, movementcount, degrees, stopmode);
 }
 
+//Turn / Drive functions
 void turnleft(int movementcount, bool stopmode){
   LFM.spinFor(forward, movementcount, degrees, false);
   RFM.spinFor(reverse, movementcount, degrees, false);
@@ -155,6 +157,7 @@ void driveforward(int movementcount, bool stopmode){
   RBM.spinFor(forward, movementcount, degrees, stopmode);
 }
 
+//Gyro Functions
 void turnrightto(int turnamount)
 {
   drivevelocity(25);
@@ -252,21 +255,22 @@ void turnleftto(int turnamount)
   drivevelocity(25);
 }*/
 
+//Autonomous
 void autonomous() {
-    drivevelocity(25);
-    intakein(360,true);
-    wait(500,msec);
-    straferight(500 ,true);
-    turnleftto(-45);
-    driveforward(750, false);
-    Lintake.spin(forward);
-    Rintake.spin(reverse);
-    wait(3000, msec);
-    Lintake.stop();
-    Rintake.stop();
-    liftout(2000, true);
-    intakein(1500, true);
-    driveforward(-200, true);
+  drivevelocity(25);
+  intakein(360,true);
+  wait(500,msec);
+  straferight(500 ,true);
+  turnleftto(-45);
+  driveforward(750, false);
+  Lintake.spin(forward);
+  Rintake.spin(reverse);
+  wait(3000, msec);
+  Lintake.stop();
+  Rintake.stop();
+  liftout(2000, true);
+  intakein(1500, true);
+  driveforward(-200, true);
 
 
 
@@ -278,20 +282,6 @@ void autonomous() {
   //liftup(1000,true);
   //driveforward(-500, true);
 
-
-
-  //Acutrate turning conversions
-
-  /*
-  float moveammount = 100; // in cm
-  const float CIRCUMFERENCE = 31.919; //in cm
-  float distanceholo = moveammount * 1.41; //
-  float conversionammount = distanceholo / CIRCUMFERENCE * 360;
-  driveforward(conversionammount, true);
-  wait(2,msec);
-  drivereverse(conversionammount, true); 
-  */
-  
   //Original time based auton
 
   /*
@@ -335,7 +325,9 @@ void autonomous() {
   */
 }
 
+//Main Drive
 void usercontrol(void) {
+  //resets encoders
   Lintake.setPosition(0,degrees);
   Rintake.setPosition(0,degrees);
   Llift.setPosition(0,degrees);
@@ -346,6 +338,7 @@ void usercontrol(void) {
   RBM.setPosition(0,degrees);
 
   while (true) {
+    //Drive code
     LFM.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position() - Controller1.Axis4.position()),percent);
     RFM.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position() + Controller1.Axis4.position()),percent);
     LBM.setVelocity((Controller1.Axis3.position() + Controller1.Axis1.position() - Controller1.Axis4.position()),percent);
@@ -356,6 +349,7 @@ void usercontrol(void) {
     LBM.spin(forward);
     RBM.spin(forward);
 
+    //lift Code
     if (Controller1.ButtonR1.pressing()){
       Llift.spin(forward);
       Rlift.spin(forward);
@@ -369,6 +363,7 @@ void usercontrol(void) {
       Rlift.stop();
     }
 
+    //Intake Code
     if (Controller1.ButtonL1.pressing()){
       Lintake.spin(reverse);
       Rintake.spin(reverse);
@@ -384,6 +379,7 @@ void usercontrol(void) {
   }
   wait(20,msec);
 }
+
 //
 // Main will set up the competition functions and callbacks.
 //
