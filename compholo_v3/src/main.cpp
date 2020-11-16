@@ -79,25 +79,29 @@ int cameraTask() {
     Brain.Screen.clearScreen();
     Brain.Screen.render();
     if(Brain.Screen.pressing() and autontype == 0){
-      autontype = 1;
       while(Brain.Screen.pressing()){
-      Brain.Screen.clearScreen();
-      Brain.Screen.setPenColor(red);
-      Brain.Screen.drawRectangle(0 , 0, 300, 300);
-      Brain.Screen.print("Left");
-      draw_touch();
-      Brain.Screen.render();
-      wait(1000,msec);
+        draw_touch();
+        if (Brain.Screen.xPosition() < 240){
+          autontype = 0;  
+          Brain.Screen.clearScreen();
+          Brain.Screen.setPenColor(red);
+          Brain.Screen.drawRectangle(0 , 0, 240, 272);
+          Brain.Screen.print("Left");
+        }
+        Brain.Screen.render();
+        wait(1000,msec);
       }
     }
     else if(Brain.Screen.pressing() and autontype == 1){
-      autontype = 0;
       while(Brain.Screen.pressing()){
-        Brain.Screen.clearScreen();
-        Brain.Screen.setPenColor(blue);
-        Brain.Screen.drawRectangle(0 , 0, 300, 300);
-        Brain.Screen.print("Right");
         draw_touch();
+        if (Brain.Screen.xPosition() < 240){
+          autontype = 0;  
+          Brain.Screen.clearScreen();
+          Brain.Screen.setPenColor(blue);
+          Brain.Screen.drawRectangle(0 , 0, 240, 272);
+          Brain.Screen.print("Right");
+        }
         Brain.Screen.render();
         wait(1000,msec);
       }
@@ -127,21 +131,20 @@ int cameraTask() {
     //Controller1.Screen.print(LBM.torque());
     //Controller1.Screen.print(RFM.torque());
     //Controller1.Screen.print(RBM.torque());
-    Controller1.Screen.clearLine(1);
-    Controller1.Screen.clearLine(2);
-    Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("LTemp");
-    Controller1.Screen.print(Lintake.temperature());
-    Controller1.Screen.newLine();
-    Controller1.Screen.print("RTemp");
-    Controller1.Screen.print(Rintake.temperature());
-    Controller1.Screen.newLine();
-    Controller1.Screen.print("GyroHeading");
-    Controller1.Screen.print(Gyro.heading());
-    Brain.Screen.render();
+  Controller1.Screen.clearLine(1);
+  Controller1.Screen.clearLine(2);
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.Screen.print("LTemp");
+  Controller1.Screen.print(Lintake.temperature());
+  Controller1.Screen.newLine();
+  Controller1.Screen.print("RTemp");
+  Controller1.Screen.print(Rintake.temperature());
+  Controller1.Screen.newLine();
+  Controller1.Screen.print("GyroHeading");
+  Controller1.Screen.print(Gyro.heading());
+  Brain.Screen.render();
 
-    task::sleep(150);
-  }
+  task::sleep(150);
   return(1);
 }
 
@@ -280,31 +283,60 @@ void turnrightto(int turnamountright){
 
 //Autonomous
 void autonomous() {
-  Gyro.setHeading(0, degrees);
-  drivevelocity(50);
-  intakein(360, false);
-  driveforward(-400, true);
-  wait(250, msec);
-  strafeleft(375, true);
-  wait(250, msec);
-  turnrightto(0);
-  drivevelocity(50);
-  wait(250, msec);
-  driveforward(400, true);
-  liftout(1200, true);
-  intakein(-500, false);
-  driveforward(-400, true);
-  
-  //second goal
-  straferight(650, true);
-  turnrightto(45);
-  drivevelocity(50);
-  wait(250, msec);
-  intakein(1800, false);
-  driveforward(1200, true);
-  liftout(2000, true);
-  driveforward(-750, false);
-  intakein(-1000, true);
+  if(autontype == 1){
+    Gyro.setHeading(0, degrees);
+    drivevelocity(50);
+    intakein(360, false);
+    driveforward(-400, true);
+    wait(250, msec);
+    strafeleft(375, true);
+    wait(250, msec);
+    turnrightto(0);
+    drivevelocity(50);
+    wait(250, msec);
+    driveforward(400, true);
+    liftout(1200, true);
+    intakein(-500, false);
+    driveforward(-400, true);
+    
+    //second goal
+    straferight(650, true);
+    turnrightto(45);
+    drivevelocity(50);
+    wait(250, msec);
+    intakein(1800, false);
+    driveforward(1200, true);
+    liftout(2000, true);
+    driveforward(-750, false);
+    intakein(-1000, true);
+  }
+  else if(autontype == 0){
+    Gyro.setHeading(0, degrees);
+    drivevelocity(50);
+    intakein(360, false);
+    driveforward(-400, true);
+    wait(250, msec);
+    strafeleft(375, true);
+    wait(250, msec);
+    turnrightto(0);
+    drivevelocity(50);
+    wait(250, msec);
+    driveforward(400, true);
+    liftout(1200, true);
+    intakein(-500, false);
+    driveforward(-400, true);
+    
+    //second goal
+    straferight(650, true);
+    turnrightto(45);
+    drivevelocity(50);
+    wait(250, msec);
+    intakein(1800, false);
+    driveforward(1200, true);
+    liftout(2000, true);
+    driveforward(-750, false);
+    intakein(-1000, true);
+  }
 
 
 
