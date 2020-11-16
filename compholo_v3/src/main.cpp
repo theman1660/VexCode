@@ -1,3 +1,34 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         20              
+// RFM                  motor         9               
+// LBM                  motor         19              
+// RBM                  motor         10              
+// Lintake              motor         15              
+// Rintake              motor         8               
+// Rlift                motor         5               
+// Llift                motor         14              
+// Vision5              vision        21              
+// Gyro                 inertial      4               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// LFM                  motor         20              
+// RFM                  motor         9               
+// LBM                  motor         19              
+// RBM                  motor         10              
+// Lintake              motor         15              
+// Rintake              motor         8               
+// Rlift                motor         5               
+// Llift                motor         14              
+// Vision5              vision        21              
+// Gyro                 inertial      4               
+// RangeR               sonar         C, D            
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:    main.cpp                                                     */
@@ -33,10 +64,65 @@ using namespace vex;
 competition Competition;
 
 //Task for Printing to brain screen
+
+
+void draw_touch(void){
+  Brain.Screen.setPenColor(red);
+  Brain.Screen.drawCircle(Brain.Screen.xPosition(), Brain.Screen.yPosition(), 30);
+}
+int autontype = 0;
 bool cameraTaskEnable;
 int cameraTask() {
-  Brain.Screen.render(true,true);
+  Brain.Screen.render(true, false);
+
+  while(true){
+    Brain.Screen.clearScreen();
+    Brain.Screen.render();
+    if(Brain.Screen.pressing() and autontype == 0){
+      autontype = 1;
+      while(Brain.Screen.pressing()){
+      Brain.Screen.clearScreen();
+      Brain.Screen.setPenColor(red);
+      Brain.Screen.drawRectangle(0 , 0, 300, 300);
+      Brain.Screen.print("Left");
+      draw_touch();
+      Brain.Screen.render();
+      wait(1000,msec);
+      }
+    }
+    else if(Brain.Screen.pressing() and autontype == 1){
+      autontype = 0;
+      while(Brain.Screen.pressing()){
+        Brain.Screen.clearScreen();
+        Brain.Screen.setPenColor(blue);
+        Brain.Screen.drawRectangle(0 , 0, 300, 300);
+        Brain.Screen.print("Right");
+        draw_touch();
+        Brain.Screen.render();
+        wait(1000,msec);
+      }
+    }
+  }
+
+
+
+  /*
   while(cameraTaskEnable){
+    if(Brain.Screen.pressing() == true and autontype == 0){
+      Brain.Screen.setCursor(0, 0);
+      autontype = 1;
+      Brain.Screen.clearScreen(red);
+      Brain.Screen.print("Auton %d", autontype);
+      wait(1000, msec);
+    }
+    else if(Brain.Screen.pressing() == true and autontype == 1){
+      Brain.Screen.setCursor(0, 0);
+      autontype = 0;
+      Brain.Screen.clearScreen(blue);
+      Brain.Screen.print("Auton %d", autontype);
+      wait(1000, msec);
+    }
+    */
     //Controller1.Screen.print(LFM.torque());
     //Controller1.Screen.print(LBM.torque());
     //Controller1.Screen.print(RFM.torque());
@@ -44,31 +130,16 @@ int cameraTask() {
     Controller1.Screen.clearLine(1);
     Controller1.Screen.clearLine(2);
     Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("LDis");
-    Controller1.Screen.print(RangeL.distance(mm));
     Controller1.Screen.print("LTemp");
     Controller1.Screen.print(Lintake.temperature());
     Controller1.Screen.newLine();
-    Controller1.Screen.print("RDis");
-    Controller1.Screen.print(RangeR.distance(mm));
     Controller1.Screen.print("RTemp");
     Controller1.Screen.print(Rintake.temperature());
     Controller1.Screen.newLine();
-    Controller1.Screen.print("GyroYaw");
-    Controller1.Screen.print(Gyro.yaw());
-    // Vision5.takeSnapshot(Vision5__REDBOX);
-  /*if (Vision5.objectCount > 0) {
-      if (Vision5.objects[1].centerX < 0){
-        Brain.Screen.print("< 100");
-      } 
-      else if (Vision5.objects[0].centerX > 0){
-        Brian.Screen.print("> 100");
-      }
-    }
+    Controller1.Screen.print("GyroHeading");
+    Controller1.Screen.print(Gyro.heading());
+    Brain.Screen.render();
 
-    else {
-      Brain.Screen.print("No Red Object");
-    }*/
     task::sleep(150);
   }
   return(1);
@@ -90,11 +161,10 @@ void pre_auton(void) {
   Gyro.calibrate();
   waitUntil(Gyro.isCalibrating() == false);
   Brain.Screen.print("GYRO good");
-
   task task1 = task(cameraTask);
   cameraTaskEnable = true;
-  Llift.setStopping(brake);
-  Rlift.setStopping(brake);
+  Llift.setStopping(coast);
+  Rlift.setStopping(coast);
   Llift.setVelocity(100,percent);
   Rlift.setVelocity(100,percent);
   Lintake.setVelocity(100,percent);
@@ -122,10 +192,10 @@ void intakein(int movementcount, bool stopmode){
 
 //Strafe Functions
 void strafeleft(int movementcount, bool stopmode){
-  LFM.spinFor(reverse, movementcount, degrees, false);
-  RFM.spinFor(forward, movementcount, degrees, false);
-  LBM.spinFor(reverse, movementcount, degrees, false);
-  RBM.spinFor(forward, movementcount, degrees, stopmode);
+  LFM.spinFor(forward, movementcount, degrees, false);
+  RFM.spinFor(reverse, movementcount, degrees, false);
+  LBM.spinFor(forward, movementcount, degrees, false);
+  RBM.spinFor(reverse, movementcount, degrees, stopmode);
 }
 
 void straferight(int movementcount, bool stopmode){
@@ -158,110 +228,97 @@ void driveforward(int movementcount, bool stopmode){
 }
 
 //Gyro Functions
-void turnrightto(int turnamount)
-{
+void turnleftto(int turnamount){
+  int leftturn = 360 - turnamount;
   drivevelocity(25);
-  LFM.spin(reverse);
-  RFM.spin(forward);
-  LBM.spin(forward);
-  RBM.spin(reverse);
-  waitUntil((Gyro.heading(degrees) >= turnamount-20));
+  LFM.spin(forward);
+  RFM.spin(reverse);
+  LBM.spin(reverse);
+  RBM.spin(forward);
+  wait(200,msec);
+  waitUntil((Gyro.heading(degrees) <= leftturn+15));
   LFM.stop();
   RFM.stop();
   LBM.stop();
   RBM.stop();
   drivevelocity(10);
-  wait(1000,msec);
-  LFM.spin(reverse);
-  RFM.spin(forward);
-  LBM.spin(forward);
-  RBM.spin(reverse);
-  waitUntil((Gyro.heading(degrees) >= turnamount));
+  wait(500,msec);
+  LFM.spin(forward);
+  RFM.spin(reverse);
+  LBM.spin(reverse);
+  RBM.spin(forward);
+  waitUntil((Gyro.heading(degrees) <= leftturn));
   LFM.stop();
   RFM.stop();
   LBM.stop();
   RBM.stop();
 }
-
-void turnleftto(int turnamount)
-{
-  drivevelocity(10);
-  LFM.spin(forward);
-  RFM.spin(reverse);
-  LBM.spin(reverse);
-  RBM.spin(forward);
-  wait(300, msec);
-  waitUntil((Gyro.yaw() <= turnamount));
+void turnrightto(int turnamountright){
+  drivevelocity(25);
+  LFM.spin(reverse);
+  RFM.spin(forward);
+  LBM.spin(forward);
+  RBM.spin(reverse);
+  wait(200,msec);
+  waitUntil((Gyro.heading(degrees) >= turnamountright-15));
   LFM.stop();
   RFM.stop();
   LBM.stop();
   RBM.stop();
-  drivevelocity(25);
+  drivevelocity(10);
+  wait(500,msec);
+  LFM.spin(reverse);
+  RFM.spin(forward);
+  LBM.spin(forward);
+  RBM.spin(reverse);
+  waitUntil((Gyro.heading(degrees) >= turnamountright));
+  LFM.stop();
+  RFM.stop();
+  LBM.stop();
+  RBM.stop();
 }
-
-/*void turntowards(int turnamount, int turndirection)
-{
-  //0 left 1 right
-  if(turndirection == 0)
-  {
-    drivevelocity(10);
-    LFM.spin(forward);
-    RFM.spin(reverse);
-    LBM.spin(reverse);
-    RBM.spin(forward);
-    wait(300, msec);
-    waitUntil((Gyro.yaw() <= turnamount));
-    LFM.stop();
-    RFM.stop();
-    LBM.stop();
-    RBM.stop();
-    drivevelocity(25);
-  }
-  else if (turndirection == 1) 
-  {
-    drivevelocity(25);
-    LFM.spin(reverse);
-    RFM.spin(forward);
-    LBM.spin(forward);
-    RBM.spin(reverse);
-    waitUntil((Gyro.heading(degrees) >= turnamount-20));
-    LFM.stop();
-    RFM.stop();
-    LBM.stop();
-    RBM.stop();
-    drivevelocity(10);
-    wait(1000,msec);
-    LFM.spin(reverse);
-    RFM.spin(forward);
-    LBM.spin(forward);
-    RBM.spin(reverse);
-    waitUntil((Gyro.heading(degrees) >= turnamount));
-    LFM.stop();
-    RFM.stop();
-    LBM.stop();
-    RBM.stop();
-  }
-  drivevelocity(10);
-  LFM.spin(forward);
-  RFM.spin(reverse);
-  LBM.spin(reverse);
-  RBM.spin(forward);
-  wait(300, msec);
-  waitUntil((Gyro.yaw() <= turnamount));
-  LFM.stop();
-  RFM.stop();
-  LBM.stop();
-  RBM.stop();
-  drivevelocity(25);
-}*/
 
 //Autonomous
 void autonomous() {
-  drivevelocity(25);
+  Gyro.setHeading(0, degrees);
+  drivevelocity(50);
+  intakein(360, false);
+  driveforward(-400, true);
+  wait(250, msec);
+  strafeleft(375, true);
+  wait(250, msec);
+  turnrightto(0);
+  drivevelocity(50);
+  wait(250, msec);
+  driveforward(400, true);
+  liftout(1200, true);
+  intakein(-500, false);
+  driveforward(-400, true);
+  
+  //second goal
+  straferight(650, true);
+  turnrightto(45);
+  drivevelocity(50);
+  wait(250, msec);
+  intakein(1800, false);
+  driveforward(1200, true);
+  liftout(2000, true);
+  driveforward(-750, false);
+  intakein(-1000, true);
+
+
+
+
+
+
+
+  /*drivevelocity(50);
   intakein(360,true);
+  strafeleft(250, true);
   wait(500,msec);
   straferight(500 ,true);
-  turnleftto(-45);
+  turnleftto(45);
+  drivevelocity(40);
   driveforward(750, false);
   Lintake.spin(forward);
   Rintake.spin(reverse);
@@ -270,7 +327,8 @@ void autonomous() {
   Rintake.stop();
   liftout(2000, true);
   intakein(1500, true);
-  driveforward(-200, true);
+  driveforward(-200, true);*/
+
 
 
 
@@ -336,6 +394,7 @@ void usercontrol(void) {
   RFM.setPosition(0,degrees);
   LBM.setPosition(0,degrees);
   RBM.setPosition(0,degrees);
+  drivevelocity(100);
 
   while (true) {
     //Drive code

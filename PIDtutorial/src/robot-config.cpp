@@ -11,6 +11,9 @@ brain  Brain;
 controller Controller1 = controller(primary);
 motor LFM = motor(PORT1, ratio18_1, false);
 motor RFM = motor(PORT2, ratio18_1, false);
+motor LBM = motor(PORT3, ratio18_1, false);
+motor RBM = motor(PORT4, ratio18_1, false);
+inertial Gyro = inertial(PORT5);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

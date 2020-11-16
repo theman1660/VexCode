@@ -23,8 +23,6 @@ extern signature Vision5__SIG_6;
 extern signature Vision5__SIG_7;
 extern vision Vision5;
 extern inertial Gyro;
-extern sonar RangeL;
-extern sonar RangeR;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

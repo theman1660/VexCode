@@ -23,8 +23,6 @@ signature Vision5__REDBOX = signature (3, 7233, 10591, 8912, -729, 309, -210, 2,
 vision Vision5 = vision (PORT21, 50, Vision5__BLUEBOX, Vision5__REDBOX);
 /*vex-vision-config:end*/
 inertial Gyro = inertial(PORT4);
-sonar RangeL = sonar(Brain.ThreeWirePort.A);
-sonar RangeR = sonar(Brain.ThreeWirePort.C);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
