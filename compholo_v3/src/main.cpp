@@ -66,44 +66,50 @@ competition Competition;
 //Task for Printing to brain screen
 
 
-void draw_touch(void){
+/*void draw_touch(void){
   Brain.Screen.setPenColor(red);
   Brain.Screen.drawCircle(Brain.Screen.xPosition(), Brain.Screen.yPosition(), 30);
-}
-int autontype = 0;
-bool cameraTaskEnable;
-int cameraTask() {
-  Brain.Screen.render(true, false);
+}*/
 
-  while(true){
-    Brain.Screen.clearScreen();
-    Brain.Screen.render();
-    if(Brain.Screen.pressing() and autontype == 0){
-      while(Brain.Screen.pressing()){
-        draw_touch();
-        if (Brain.Screen.xPosition() < 240){
-          autontype = 0;  
-          Brain.Screen.clearScreen();
-          Brain.Screen.setPenColor(red);
-          Brain.Screen.drawRectangle(0 , 0, 240, 272);
-          Brain.Screen.print("Left");
+// LEFT = 1
+// RIGHT = 0
+int autontype = 0;
+bool cameraTaskEnable = false;
+int cameraTask() {
+  while(cameraTaskEnable){
+    Brain.Screen.render(true, false);
+    while(true){
+      if(Brain.Screen.pressing() and autontype == 0){
+        Brain.Screen.clearScreen();
+        while(Brain.Screen.pressing()){
+          if (Brain.Screen.xPosition() < 240){
+            autontype = 1;  
+            Brain.Screen.clearScreen();
+            Brain.Screen.setPenColor(red);
+            Brain.Screen.drawRectangle(0 , 0, 240, 272);
+            Brain.Screen.setCursor(0, 0);
+            Brain.Screen.print("Left");
+            Controller1.Screen.print(autontype);
+          }
+          Brain.Screen.render();
+          wait(1000,msec);
         }
-        Brain.Screen.render();
-        wait(1000,msec);
       }
-    }
-    else if(Brain.Screen.pressing() and autontype == 1){
-      while(Brain.Screen.pressing()){
-        draw_touch();
-        if (Brain.Screen.xPosition() < 240){
-          autontype = 0;  
-          Brain.Screen.clearScreen();
-          Brain.Screen.setPenColor(blue);
-          Brain.Screen.drawRectangle(0 , 0, 240, 272);
-          Brain.Screen.print("Right");
+      else if(Brain.Screen.pressing() and autontype == 1){
+        Brain.Screen.clearScreen();
+        while(Brain.Screen.pressing()){
+          if (Brain.Screen.xPosition() < 240){
+            autontype = 0;  
+            Brain.Screen.clearScreen();
+            Brain.Screen.setPenColor(blue);
+            Brain.Screen.drawRectangle(0 , 0, 240, 272);
+          
+            Brain.Screen.print("Right");
+            Controller1.Screen.print(autontype);
+          }
+          Brain.Screen.render();
+          wait(1000,msec);
         }
-        Brain.Screen.render();
-        wait(1000,msec);
       }
     }
   }
@@ -165,7 +171,6 @@ void pre_auton(void) {
   waitUntil(Gyro.isCalibrating() == false);
   Brain.Screen.print("GYRO good");
   task task1 = task(cameraTask);
-  cameraTaskEnable = true;
   Llift.setStopping(coast);
   Rlift.setStopping(coast);
   Llift.setVelocity(100,percent);
@@ -283,136 +288,66 @@ void turnrightto(int turnamountright){
 
 //Autonomous
 void autonomous() {
-  if(autontype == 1){
-    Gyro.setHeading(0, degrees);
-    drivevelocity(50);
-    intakein(360, false);
-    driveforward(-400, true);
-    wait(250, msec);
-    strafeleft(375, true);
-    wait(250, msec);
-    turnrightto(0);
-    drivevelocity(50);
-    wait(250, msec);
-    driveforward(400, true);
-    liftout(1200, true);
-    intakein(-500, false);
-    driveforward(-400, true);
-    
-    //second goal
-    straferight(650, true);
-    turnrightto(45);
-    drivevelocity(50);
-    wait(250, msec);
-    intakein(1800, false);
-    driveforward(1200, true);
-    liftout(2000, true);
-    driveforward(-750, false);
-    intakein(-1000, true);
-  }
-  else if(autontype == 0){
-    Gyro.setHeading(0, degrees);
-    drivevelocity(50);
-    intakein(360, false);
-    driveforward(-400, true);
-    wait(250, msec);
-    strafeleft(375, true);
-    wait(250, msec);
-    turnrightto(0);
-    drivevelocity(50);
-    wait(250, msec);
-    driveforward(400, true);
-    liftout(1200, true);
-    intakein(-500, false);
-    driveforward(-400, true);
-    
-    //second goal
-    straferight(650, true);
-    turnrightto(45);
-    drivevelocity(50);
-    wait(250, msec);
-    intakein(1800, false);
-    driveforward(1200, true);
-    liftout(2000, true);
-    driveforward(-750, false);
-    intakein(-1000, true);
-  }
-
-
-
-
-
-
-
-  /*drivevelocity(50);
-  intakein(360,true);
-  strafeleft(250, true);
-  wait(500,msec);
-  straferight(500 ,true);
-  turnleftto(45);
-  drivevelocity(40);
-  driveforward(750, false);
-  Lintake.spin(forward);
-  Rintake.spin(reverse);
-  wait(3000, msec);
-  Lintake.stop();
-  Rintake.stop();
+  //LEFT = 1
+  //RIGHT = 0
+  
+  Gyro.setHeading(0, degrees);
+  drivevelocity(50);
+  intakein(360, false);
+  driveforward(-400, true);
+  wait(250, msec);
+  strafeleft(375, true);
+  wait(250, msec);
+  turnrightto(0);
+  drivevelocity(50);
+  wait(250, msec);
+  driveforward(400, true);
+  liftout(1200, true);
+  intakein(-500, false);
+  driveforward(-400, true);
+  //second goal
+  straferight(650, true);
+  turnrightto(45);
+  drivevelocity(50);
+  wait(250, msec);
+  intakein(1800, false);
+  driveforward(1200, true);
   liftout(2000, true);
-  intakein(1500, true);
-  driveforward(-200, true);*/
-
-
-
-
-  //wait(200,msec);
-  //turnleftto(135);
-  //wait(200,msec);
-  //intakein(5000,false);
-  //driveforward(3000,true);
-  //liftup(1000,true);
-  //driveforward(-500, true);
-
-  //Original time based auton
+  driveforward(-750, false);
+  intakein(-1000, true);
+  
 
   /*
-  Lintake.spin(reverse);
-  Rintake.spin(reverse);
-  wait(500,msec);
-  Lintake.stop();
-  Rintake.stop();
-  wait(200,msec);
-  //rightstrafetime = 1600;
-  straferight(700,true);
-  wait(200,msec);
-  //turnlefttime = 700;
-  turnleft(250,true);
-  wait(200,msec);
-  Lintake.spin(reverse);
-  Rintake.spin(reverse);
-  LFM.setVelocity(40,percent);
-  RFM.setVelocity(40,percent);
-  LBM.setVelocity(40,percent);
-  RBM.setVelocity(40,percent);
-  LFM.spin(reverse);
-  LBM.spin(forward);
-  RFM.spin(reverse);
-  RBM.spin(forward);
-  wait(1300,msec);
-  Llift.spin(forward);
-  Rlift.spin(forward);
-  wait(650,msec);
-  RFM.stop();
-  RBM.stop(); 
-  LFM.stop();
-  LBM.stop();
-  wait(500,msec);
-  Lintake.stop();
-  Rintake.stop();
-  wait(1000,msec);
-  Llift.stop();
-  Rlift.stop();
-  driveforward(-500, true);
+  Gyro.setHeading(0, degrees);
+  drivevelocity(50);
+  intakein(360, false);
+  driveforward(-400, true);
+  wait(250, msec);
+  //INVERTED
+  strafeleft( -375, true);
+  wait(250, msec);
+  //INVERTED
+  turnleftto(0);
+  drivevelocity(50);
+  wait(250, msec);
+  driveforward(400, true);
+  liftout(1200, true);
+  intakein(-500, false);
+  driveforward(-400, true);
+  //second goal
+  //INVERTED
+  straferight(-650, true);
+  //INVERTED
+  turnleftto(45);
+  drivevelocity(50);
+  wait(250, msec);
+  intakein(1800, false);
+  driveforward(1200, true);
+  liftout(2000, true);
+  driveforward(-750, false);
+  intakein(-1000, true);
   */
+  
 }
 
 //Main Drive
