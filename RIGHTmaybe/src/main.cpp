@@ -290,15 +290,16 @@ void turnrightto(int turnamountright){
 void autonomous() {
   //LEFT = 1
   //RIGHT = 0
-  
   Gyro.setHeading(0, degrees);
   drivevelocity(50);
   intakein(360, false);
   driveforward(-400, true);
   wait(250, msec);
-  strafeleft(375, true);
+  //INVERTED
+  strafeleft( -375, true);
   wait(250, msec);
-  turnrightto(0);
+  //INVERTED
+  turnleftto(0);
   drivevelocity(50);
   wait(250, msec);
   driveforward(400, true);
@@ -306,8 +307,10 @@ void autonomous() {
   intakein(-500, false);
   driveforward(-400, true);
   //second goal
-  straferight(650, true);
-  turnrightto(45);
+  //INVERTED
+  straferight(-650, true);
+  //INVERTED
+  turnleftto(45);
   drivevelocity(50);
   wait(250, msec);
   intakein(1800, false);
